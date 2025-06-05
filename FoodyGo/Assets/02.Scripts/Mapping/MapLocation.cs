@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FoodyGo.Services.GPS
+namespace FoodyGo.Mapping
 {
     /// <summary>
     /// 맵 위치 데이터

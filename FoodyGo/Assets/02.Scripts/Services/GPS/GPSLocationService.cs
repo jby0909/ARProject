@@ -1,11 +1,27 @@
-﻿using System;
+﻿using FoodyGo.Mapping;
+using System;
 using UnityEngine;
 
 namespace FoodyGo.Services.GPS
 {
     public class GPSLocationService : MonoBehaviour
     {
-        private ILocationProvider _locationProvider;
+        public bool isReady { get; private set; }
+
+        [Header("Map Tile Settings")]
+        [Tooltip("맵 타일 스케일")]
+        [field: SerializeField]
+        public int mapTileScale { get; private set; } = 1;
+
+        [Tooltip("맵 타일 크기(픽셀)")]
+        [field: SerializeField]
+        public int mapTileSizePixels { get; private set; } = 640;
+
+        [Tooltip("맵 타일 크기 Zoom 레벨(1 ~ 20)")]
+        [field: SerializeField]
+        [Range(1, 20)]
+        public int mapTileZoomLevel { get; private set; } = 15;
+
 
         [Header("Simulation Settings (Editor Only)")]
         [SerializeField] bool _isSimulation;
@@ -18,7 +34,14 @@ namespace FoodyGo.Services.GPS
         public float accuracy { get; private set; }
         public double timeStamp { get; private set; }
 
-        public event Action onLocationUpdated;
+        public event Action onMapRedraw;
+
+        public MapLocation mapCenter;
+        public MapEnvelope mapEnvelope;
+        public Vector3 mapWorldCenter;
+        public Vector2 mapScale;
+
+        private ILocationProvider _locationProvider;
 
         private void Awake()
         {
@@ -27,6 +50,7 @@ namespace FoodyGo.Services.GPS
             simulatedLocationProvider.target = _simulationTarget;
             simulatedLocationProvider.startLocation = _simulationStartLocation;
             _locationProvider = simulatedLocationProvider;
+            isReady = true;
 #else
             _locationProvider = gameObject.AddComponent<DeviceLocationProvider>();
 #endif
@@ -51,6 +75,34 @@ namespace FoodyGo.Services.GPS
             altitude = newAltitude;
             accuracy = newAccuracy;
             timeStamp = newTimeStamp;
+
+            if(mapEnvelope.Contains(new MapLocation(latitude, longitude)) == false)
+            {
+                CenterMap();
+            }
+
         }
+
+        private void CenterMap()
+        {
+            mapCenter.latitude = latitude;
+            mapCenter.longitude = longitude;
+            mapWorldCenter.x = GoogleMapUtils.LonToX(mapCenter.longitude);
+            mapWorldCenter.y = GoogleMapUtils.LatToY(mapCenter.latitude);
+
+            mapScale.x = (float)GoogleMapUtils.CalculateScaleX(latitude, mapTileSizePixels, mapTileScale, mapTileZoomLevel);
+            mapScale.y = (float)GoogleMapUtils.CalculateScaleY(longitude, mapTileSizePixels, mapTileScale, mapTileZoomLevel);
+
+            var lon1 = GoogleMapUtils.adjustLonByPixels(longitude, -mapTileSizePixels / 2, mapTileZoomLevel);
+            var lat1 = GoogleMapUtils.adjustLatByPixels(latitude, mapTileSizePixels / 2, mapTileZoomLevel);
+
+            var lon2 = GoogleMapUtils.adjustLonByPixels(longitude, mapTileSizePixels / 2, mapTileZoomLevel);
+            var lat2 = GoogleMapUtils.adjustLatByPixels(latitude, -mapTileSizePixels / 2, mapTileZoomLevel);
+
+            mapEnvelope = new MapEnvelope((float)lon1, (float)lat1, (float)lon2, (float)lat2);
+
+            onMapRedraw?.Invoke();
+        }
+
     }
 }
