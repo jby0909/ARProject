@@ -6,6 +6,11 @@ namespace FoodyGo.Services.GPS
     public interface ILocationProvider
     {
         /// <summary>
+        /// 동작중
+        /// </summary>
+        bool isRunning { get; }
+
+        /// <summary>
         /// 위도
         /// </summary>
         double latitude { get; }

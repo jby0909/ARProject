@@ -29,28 +29,8 @@ namespace FoodyGo.Mapping
         public GoogleStaticMapService googleStaticMapService;
 
         [Header("GPS Services")]
-        public GPSLocationService gpsLocationService
-        {
-            get => _gpsLocationService;
-            set
-            {
-                if (value == _gpsLocationService)
-                    return;
-
-                if(value != null)
-                {
-                    if(_gpsLocationService != null)
-                    {
-                        _gpsLocationService.onMapRedraw -= RefreshMapTile;
-                    }
-                    value.onMapRedraw += RefreshMapTile;
-                }
-                _gpsLocationService = value;
-            }
-        }
-
-        private GPSLocationService _gpsLocationService;
-
+        public GPSLocationService gpsLocationService;
+       
         private Renderer _renderer;
 
         private void Awake()
