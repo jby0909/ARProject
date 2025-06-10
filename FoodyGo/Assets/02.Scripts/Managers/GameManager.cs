@@ -9,57 +9,66 @@ namespace FoodyGo.Managers
 {
     public class GameManager : Singleton<GameManager>
     {
-        [Header("Splash Screen")]
-        public bool ShowSplashScreen = true;
-        public string SplashSceneName;
-
         [Header("Game Scenes")]
         public string MapSceneName;
+        public string SplashSceneName;
+        public string CatchSceneName;
 
         [Header("Layer Names")]
         public string MonsterLayerName = "Monster";
 
         private Scene SplashScene;
         private Scene MapScene;
+        private Scene CatchScene;
+
         // Use this for initialization
-        void Start()
+        IEnumerator Start()
         {
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
-            if (ShowSplashScreen && string.IsNullOrEmpty(SplashSceneName) == false)
-            {
-                SceneManager.LoadSceneAsync(SplashSceneName, LoadSceneMode.Additive);
-            }
-            else if (string.IsNullOrEmpty(MapSceneName) == false)
-            {
-                SceneManager.LoadSceneAsync(MapSceneName, LoadSceneMode.Additive);
-            }
+            yield return SceneManager.LoadSceneAsync(SplashSceneName, LoadSceneMode.Additive);
+            yield return SceneManager.LoadSceneAsync(MapSceneName, LoadSceneMode.Additive);
+            yield return SceneManager.LoadSceneAsync(CatchSceneName, LoadSceneMode.Additive);
+            ActiveAdditiveScene(MapSceneName);
+            yield return SceneManager.UnloadSceneAsync(SplashSceneName);
         }
 
         //run when a new scene is loaded
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode lsm)
         {
-            if (scene.name == SplashSceneName)
-            {
-                SplashScene = scene;
-                StartCoroutine(DisplaySplashScene());
-            }
-            else if (scene.name == MapSceneName)
+            if (scene.name == MapSceneName)
             {
                 MapScene = scene;
             }
+            else if(scene.name == CatchSceneName)
+            {
+                CatchScene = scene;
+            }
         }
 
-        //display the Splash scene and then load the game start scene
-        IEnumerator DisplaySplashScene()
+        public void ActiveAdditiveScene(string sceneName)
         {
-            SceneManager.LoadSceneAsync(MapSceneName, LoadSceneMode.Additive);
-            //set a fixed amount of time to wait before unloading splash scene   
-            //we could also check if the GPS service was started and running
-            //or any other requirement   
-            yield return new WaitForSeconds(5);
-            SceneManager.UnloadSceneAsync(SplashScene);
+            bool activeMapScene = sceneName.Equals(MapSceneName);
+            bool activeCatchScene = sceneName.Equals(CatchSceneName);
+
+            GameObject[] roots;
+
+            roots = CatchScene.GetRootGameObjects();
+
+            foreach (GameObject root in roots)
+            {
+                root.SetActive(activeCatchScene);
+            }
+
+            roots = MapScene.GetRootGameObjects();
+
+            foreach (GameObject root in roots)
+            {
+                root.SetActive(activeMapScene);
+            }
         }
+
+        
 
         // Update is called once per frame
         void Update()

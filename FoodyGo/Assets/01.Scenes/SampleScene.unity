@@ -765,7 +765,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gpsLocationService: {fileID: 144377816}
-  monsterPrefab: {fileID: 3462519145504869794, guid: 10d292608fa07b146a5c229e70224fc7, type: 3}
+  monsterPrefab: {fileID: 146750988858435040, guid: 10d292608fa07b146a5c229e70224fc7, type: 3}
   monsterSpawnRate: 0.75
   latitudeSpawnOffset: 0.001
   longitudeSpawnOffset: 0.001
@@ -775,6 +775,7 @@ MonoBehaviour:
   oneStepRange: 125
   twoStepRange: 150
   threeStepRange: 200
+  _googleMapTileManager: {fileID: 850711375}
 --- !u!4 &1737038091
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using FoodyGo.Controllers;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,8 +12,8 @@ namespace FoodyGo.InputSystems
         [SerializeField] float _throwSpeed = 35f;
 
         [Tooltip("던질 공 에셋")]
-        [SerializeField] GameObject _throwObjectPrefab;
-        GameObject _throwObject;
+        [SerializeField] MonsterBallController _throwObjectPrefab;
+        MonsterBallController _throwObject;
 
         [Header("Input actions")]
         [Tooltip("스크린 터치 좌표")]
@@ -22,7 +23,6 @@ namespace FoodyGo.InputSystems
 
 
         [SerializeField] GameObject _target;
-        bool _isThrowing;
         bool _isDragging;
         double _beginDragTimeMark;
         Vector2 _cachedTouchPosition;
@@ -51,7 +51,7 @@ namespace FoodyGo.InputSystems
 
         void OnTouchPositionPerformed(InputAction.CallbackContext context)
         {
-            if(_isThrowing)
+            if(_throwObject == null)
             {
                 return;
             }
@@ -61,13 +61,13 @@ namespace FoodyGo.InputSystems
 
         void OnTouchPressPerformed(InputAction.CallbackContext context)
         {
-            if(_isThrowing)
+            if (_throwObject == null)
             {
                 return;
             }
 
             // 터치 눌림
-            if(context.ReadValueAsButton())
+            if (context.ReadValueAsButton())
             {
                 if(_isDragging == false)
                 {
@@ -89,38 +89,16 @@ namespace FoodyGo.InputSystems
                     float dragVelocityY = dragDelta.y / (float)elapsedDraggingTime;
                     if(dragVelocityY >= _throwSpeed)
                     {
-                        StartCoroutine(C_Throw(2f, 1f));
+                        _throwObject.transform.SetParent(null);
+                        _throwObject.Throw(_target, 2f, 1f);
+                        _throwObject = null;
+                        Invoke(nameof(ResetThrowObject), 1.0f);
                     }
                 }
             }
         }
 
-        IEnumerator C_Throw(float arcHeight, float duration)
-        {
-            _isThrowing = true;
-
-            _throwObject.transform.SetParent(null);
-            Vector3 startPos = _throwObject.transform.position;
-            Vector3 endPos = _target.transform.position;
-
-            float elapsedTime = 0f;
-
-            while(elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsedTime / duration);
-                float ease = Mathf.Sin(t * Mathf.PI * 0.5f);
-                Vector3 lerp = Vector3.Lerp(startPos, endPos, ease);
-
-                float heightOffset = arcHeight * Mathf.Sin(Mathf.PI * ease);
-                Vector3 targetPos = new Vector3(lerp.x, lerp.y + heightOffset, lerp.z);
-                _throwObject.transform.position = targetPos;
-                yield return null;
-            }
-
-            _throwObject.transform.position = endPos;
-            _isThrowing = false;
-        }
+        
 
         void ResetThrowObject()
         {
@@ -129,7 +107,7 @@ namespace FoodyGo.InputSystems
                 _throwObject = Instantiate(_throwObjectPrefab, Camera.main.transform);
             }
             
-            _throwObject.transform.localPosition = new Vector3(0f, -1f, 2.5f);
+            _throwObject.transform.localPosition = new Vector3(-0.5f, -1f, 2.5f);
         }
     }
 }

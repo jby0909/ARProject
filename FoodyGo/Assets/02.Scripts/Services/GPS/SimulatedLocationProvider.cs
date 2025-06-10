@@ -23,7 +23,7 @@ namespace FoodyGo.Services.GPS
 
         public event Action<double, double, double, float, double> onLocationUpdated;
 
-        private double _meterPerDegreeLatitude = 11320; // 위도 1도 당 약 111.32km
+        private double _meterPerDegreeLatitude = 111320; // 위도 1도 당 약 111.32km
         private float _updateLocationInterval = 0.1f; // 갱신 간격
         private float _updatedTimeMark; // 마지막으로 갱신된 시간
         private Vector3 _prevTargetPosition; // 이전 프레임 타겟의 위치

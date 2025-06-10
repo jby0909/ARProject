@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 559163516199526082}
   - component: {fileID: 2018976801906772623}
   - component: {fileID: 6655026844763663008}
-  - component: {fileID: 8514067151434881678}
-  m_Layer: 0
+  - component: {fileID: 1413821866907488306}
+  m_Layer: 11
   m_Name: CatchBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,24 +87,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &8514067151434881678
-SphereCollider:
+--- !u!114 &1413821866907488306
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8332141606120392213}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08d53bb43bf2d74986009425229bb43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 0.7
+  _targetMask:
+    serializedVersion: 2
+    m_Bits: 1024
