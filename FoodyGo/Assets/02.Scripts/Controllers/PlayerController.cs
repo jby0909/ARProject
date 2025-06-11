@@ -1,5 +1,7 @@
 using FoodyGo.Mapping;
+using FoodyGo.Services.GPS;
 using FoodyGo.UI;
+using FoodyGo.Utils.DI;
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -71,7 +73,10 @@ namespace FoodyGo.Controllers
                 velocity = Vector3.zero;
             }
         }
+#elif UNITY_ANDROID
+
 #endif
+        [Inject][SerializeField] GPSLocationService _gpsLocationService;
         private void OnTriggerEnter(Collider other)
         {
             if((1 << other.gameObject.layer & _battleMask) > 0)

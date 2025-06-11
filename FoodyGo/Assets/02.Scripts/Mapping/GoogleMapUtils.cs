@@ -26,6 +26,33 @@ namespace FoodyGo.Mapping
         // 경도(°)를 라디안으로 변환 후 픽셀 X 좌표로 곱해줄 상수 (GOOGLE_OFFSET_RADIUS * π/180)
         static private double preLonToX1 = GOOGLE_OFFSET_RADIUS * (Math.PI / 180.0);
 
+        static double UNITY_UNIT = 100.0;
+
+        static double PIXELS = 640.0;
+
+        static double UNITY_UNITS_PER_PIXEL = UNITY_UNIT / PIXELS;
+
+        public static float LonToUnityX(double lon, double centerLon, int zoom)
+        {
+            int shift = 21 - zoom;
+            double px = LonToX(lon) >> shift;
+            double centerPx = LonToX(centerLon) >> shift;
+            double deltaPx = px - centerPx;
+
+            return (float)(deltaPx * UNITY_UNITS_PER_PIXEL);
+        }
+
+        public static float LatToUnityY(double lat, double centerLat, int zoom)
+        {
+            int shift = 21 - zoom;
+            double px = LatToY(lat) >> shift;
+            double centerPx = LatToY(centerLat) >> shift;
+            double deltaPx = px - centerPx;
+
+            return (float)(deltaPx * UNITY_UNITS_PER_PIXEL);
+        }
+
+
 
         /// <summary>
         /// 경도(lon, °)를 “zoom = 21” 머카토르 픽셀 X 좌표(정수)로 변환합니다.

@@ -38,6 +38,7 @@ namespace FoodyGo.Services.GPS
 
         public event Action onMapRedraw;
 
+        public MapLocation mapOrigin;
         public MapLocation mapCenter;
         public MapEnvelope mapEnvelope;
         public Vector3 mapWorldCenter;
@@ -61,6 +62,7 @@ namespace FoodyGo.Services.GPS
         IEnumerator Start()
         {
             yield return new WaitUntil(() => _locationProvider.isRunning);
+            mapOrigin = new MapLocation(_locationProvider.latitude, _locationProvider.longitude);
             isReady = true;
         }
 

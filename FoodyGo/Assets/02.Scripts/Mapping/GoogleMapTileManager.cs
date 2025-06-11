@@ -27,7 +27,7 @@ namespace FoodyGo.Mapping
         GoogleMapTile[,] _mapTiles = new GoogleMapTile[GRID_SIZE, GRID_SIZE];
         readonly int[] TILE_OFFSETS = { -1, 0, 1 };
         const int GRID_SIZE = 3;
-        const float PLANE_SIZE = 10f;
+        const float PLANE_SIZE = 100f;
 
         MapLocation _mapOrigin;
 
